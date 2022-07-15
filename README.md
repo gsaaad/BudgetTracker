@@ -1,4 +1,4 @@
-# Budget Tracker
+# Budget Tracker!
 
 ## Welcome to Budget Tracker, an application created to assist you.
 
