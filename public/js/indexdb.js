@@ -20,7 +20,7 @@ request.onsuccess = function (event) {
 
   // check if app is online
   if (navigator.online) {
-    // uploadTransactions()
+    uploadTransactions();
   }
 };
 
@@ -28,14 +28,64 @@ request.onerror = function (event) {
   console.log(event.target.errorCode);
 };
 
-// this will be used in add-transaction.js
 function saveTransactions(newTransaction) {
   // create transaction
-  const transaction = db.transaction(["Budget_Tracker", "readwrite"]);
+  const transaction = db.transaction(["new_Transaction", "readwrite"]);
 
   // access the objectStore
-  const budgetObjectStore = transaction.objectStore("Budget_Tracker");
+  const budgetObjectStore = transaction.objectStore("new_Transaction");
 
   //   add new transaction
   budgetObjectStore.add(newTransaction);
 }
+
+function uploadTransactions() {
+  // open the transaction
+
+  const transaction = db.transaction(["new_Transaction"], "readwrite");
+
+  // access pending object store
+
+  const budgetObjectStore = transaction.objectStore("new_Transaction");
+
+  // get all records from store
+
+  const getAllTransactions = budgetObjectStore.getAll();
+
+  // if its success
+
+  getAllTransactions.onsuccess = function () {
+    // if there was data in indexedDB store, send to API server
+
+    if (getAllTransactions.results.length > 0) {
+      console.log("MORE THAN 0 TRANSACTIONS");
+
+      fetch("/api/transaction", {
+        method: "POST",
+        body: JSON.stringify(getAllTransactions.result),
+        headers: {
+          Accept: "application/json, text/plain, */*",
+          "Content-Type": "application/json",
+        },
+      })
+        .then((response) => {
+          return response.json();
+        })
+        .then((serverResponse) => {
+          if (serverResponse.message) {
+            throw new Error(serverResponse);
+          }
+          const transaction = db.transaction(["new_Transaction", "readwrite"]);
+          const budgetObjectStore = transaction.objectStore("new_Transaction");
+
+          // clear rest of items
+          budgetObjectStore.clear();
+        })
+        .catch((err) => {
+          console.log(err);
+        });
+    }
+  };
+}
+
+window.addEventListener("online", uploadTransactions);
