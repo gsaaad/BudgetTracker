@@ -15,6 +15,8 @@ const FILES_TO_CACHE = [
   "./css/styles.css",
   "./js/index.js",
   "./js/indexdb.js",
+  "./index.html",
+  "./models/transaction.js",
 ];
 
 // if theres cache, get it!
@@ -45,7 +47,7 @@ self.addEventListener("install", function (e) {
 });
 
 // delete outdated caches
-self.addEventListener("active", function (e) {
+self.addEventListener("activate", function (e) {
   e.waitUntil(
     caches.keys().then(function (keyList) {
       let cacheKeepList = keyList.filter(function (key) {
