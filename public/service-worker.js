@@ -19,11 +19,21 @@ const FILES_TO_CACHE = [
   "./models/transaction.js",
 ];
 
+// cache resources
+self.addEventListener("install", function (e) {
+  e.waitUntil(
+    caches.open(CACHE_NAME).then(function (cache) {
+      console.log("installing cache: " + CACHE_NAME);
+      return cache.addAll(FILES_TO_CACHE);
+    })
+  );
+});
+
 // if theres cache, get it!
 self.addEventListener("fetch", function (e) {
   console.log("fetch request: " + e.request.url);
 
-  e.responsdWith(
+  e.respondWith(
     caches.match(e.request).then(function (request) {
       if (request) {
         console.log("responding with cache: " + e.request.url);
@@ -32,16 +42,6 @@ self.addEventListener("fetch", function (e) {
         console.log("file is not cached, fetching : " + e.request.url);
         return fetch(e.request);
       }
-    })
-  );
-});
-
-// cache resources
-self.addEventListener("install", function (e) {
-  e.waitUntil(
-    caches.open(CACHE_NAME).then(function (cache) {
-      console.log("installing cache: " + CACHE_NAME);
-      return cache.addAll(FILES_TO_CACHE);
     })
   );
 });
