@@ -4,6 +4,8 @@
 
 Inflation too high? spending more money than you can make? Use this Budget Tracker to help you lower your expenses and put more money back into your pockets, so you can SAVE! Use this Budget Tracker while your are offline (no network or low network connection), and as you connect back to a network service, all your transactions will be automatically uploaded to your Tracker.
 
+- ![Screenshot](./public/icons/Preview.png)
+
 ## Table of Contents
 
 - [Usage](#usage)
