@@ -28,7 +28,7 @@ request.onerror = function (event) {
   console.log(event.target.errorCode);
 };
 
-function saveTransactions(newTransaction) {
+function saveRecord(newTransaction) {
   // create transaction
   const transaction = db.transaction(["new_Transaction"], "readwrite");
 
@@ -57,10 +57,10 @@ function uploadTransactions() {
   getAllTransactions.onsuccess = function () {
     // if there was data in indexedDB store, send to API server
 
-    if (getAllTransactions.results.length > 0) {
+    if (getAllTransactions.result.length > 0) {
       console.log("MORE THAN 0 TRANSACTIONS");
 
-      fetch("/api/transaction", {
+      fetch("/api/transaction/bulk", {
         method: "POST",
         body: JSON.stringify(getAllTransactions.result),
         headers: {
