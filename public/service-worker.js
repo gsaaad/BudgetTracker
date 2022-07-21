@@ -33,15 +33,14 @@ self.addEventListener("fetch", function (e) {
   console.log("fetch request: " + e.request.url);
 
   e.respondWith(
-    fetch(e.request).catch(function () {
-      return caches.match(e.request).then(function (response) {
-        if (response) {
-          return response;
-        } else if (e.request.headers.get("accept").includes("text/html")) {
-          // return the cached home page for all requests for html pages
-          return caches.match("/");
-        }
-      });
+    fetch(e.request).catch(async function () {
+      const response = await caches.match(e.request);
+      if (response) {
+        return response;
+      } else if (e.request.headers.get("accept").includes("text/html")) {
+        // return the cached home page for all requests for html pages
+        return caches.match("/");
+      }
     })
   );
 });
