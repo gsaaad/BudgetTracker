@@ -2,7 +2,7 @@
 let db;
 
 // name and version
-const request = indexedDB.open("Budget_Tracker", 1);
+const request = indexedDB.open("budget", 1);
 
 request.onupgradeneeded = function (event) {
   // save a reference to database
@@ -10,7 +10,7 @@ request.onupgradeneeded = function (event) {
   const db = event.target.result;
   // create object store/table called 'new_Transaction' auto increment
 
-  db.createObjectStore("new_Transaction", { autoIncrement: true });
+  db.createObjectStore("new_Record", { autoIncrement: true });
 };
 
 request.onsuccess = function (event) {
@@ -30,7 +30,7 @@ request.onerror = function (event) {
 
 function saveTransactions(newTransaction) {
   // create transaction
-  const transaction = db.transaction(["new_Transaction", "readwrite"]);
+  const transaction = db.transaction(["new_Transaction"], "readwrite");
 
   // access the objectStore
   const budgetObjectStore = transaction.objectStore("new_Transaction");
@@ -69,13 +69,13 @@ function uploadTransactions() {
         },
       })
         .then((response) => {
-          return response.json();
+          response.json();
         })
         .then((serverResponse) => {
           if (serverResponse.message) {
             throw new Error(serverResponse);
           }
-          const transaction = db.transaction(["new_Transaction", "readwrite"]);
+          const transaction = db.transaction(["new_Transaction"], "readwrite");
           const budgetObjectStore = transaction.objectStore("new_Transaction");
 
           // clear rest of items
